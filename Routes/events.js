@@ -18,4 +18,25 @@ router.get("/", async (req, res) => {
     res.status(403).json("You are not authorized user");
   }
 });
+router.delete("/:id", async (req, res) => {
+  if (req.user.id === req.params.id || req.user.isAdmin) {
+    try {
+      const deletedUser = await Events.findByIdAndDelete(req.params.id);
+      res.status(200).json(deletedUser);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  } else {
+    res.status(403).json("You are advised to delete only your data");
+  }
+});
+//GET
+router.get("/find/:id", async (req, res) => {
+  try {
+    const foundUser = await Events.findById(req.params.id);
+    res.status(200).json(foundUser);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
 module.exports = router;
